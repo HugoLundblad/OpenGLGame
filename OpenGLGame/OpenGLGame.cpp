@@ -1,72 +1,18 @@
 #include <iostream>
-#include <windows.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <string>
+#include "Window.h"
 
 using namespace std;
 
 void processInput(GLFWwindow*);
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    glViewport(0, 0, width, height);
-}
-
-
-void error_callback(int error, const char* msg) {
-    string s;
-    s = " [" + to_string(error) + "] " + msg + '\n';
-    cerr << s << endl;
-}
-
-struct Window {
-    void Render() {
-
-    }
-};
-
 int main() {
 
-    glfwSetErrorCallback(error_callback);
+    Window window{ 800, 600 }
 
-    // Initialize GLFW
-    if (!glfwInit()) { // Exit, if it failed
-        cout << "Failed to init GLFW" << endl;
-        return -1;
-    }
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#if __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
-
-    // Request Window from Operating System
-    GLFWwindow* window = glfwCreateWindow(800, 600, "LearnOpenGL", nullptr, nullptr);
-    if (window == nullptr)
-    {
-        cout << "Failed to create GLFW window" << endl;
-        glfwTerminate();
-        return -1;
-    }
-    glfwMakeContextCurrent(window);
-
-    // Initialize GLAD (connects OpenGL Functions)
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-        cout << "Failed to initialize GLAD" << endl;
-        glfwTerminate();
-        return -1;
-    }
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    int width, height;
-    glfwGetFramebufferSize(window, &width, &height);
-    glViewport(0, 0, width, height);
-
-    // Initialization ends here
-    // ==================================================================
+// ==================================================================
     // The Real Program starts here
     float red = 0;
 
@@ -174,11 +120,11 @@ int main() {
 
 
     // While the User doesn't want to Quit (X Button, Alt+F4)
-    while (!glfwWindowShouldClose(window))
+    while (!glfwWindowShouldClose(window.window))
     {
         // process input (e.g. close window on Esc)
         glfwPollEvents();
-        processInput(window);
+        processInput(window.window);
         red += 0.0001f;
         if (red > 1)
             red -= 1;
@@ -196,7 +142,7 @@ int main() {
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
         // present (send the current frame to the computer screen)
-        glfwSwapBuffers(window); // ??
+        glfwSwapBuffers(window.window); // ??
     }
     // Cleans up all the GLFW stuff
     glfwTerminate();
