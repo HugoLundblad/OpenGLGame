@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <string>
 #include "Window.h"
+#include "Mesh.h"
 
 using namespace std;
 
@@ -10,56 +11,24 @@ void processInput(GLFWwindow*);
 
 int main() {
 
-    Window window{ 800, 600 }
+    Window window{ 800, 600 };
+
+    // #500     #501
+    int width, height, nrChannels;
+    // unsigned char* data = stbi_load("container.jpg", &width, &height, &nrChannels, 0);
+
+    unsigned int textureId;
+    glGenTextures(1, &textureId);
+    glBindTexture(GL_TEXTURE_2D, textureId);
+    // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    // glGenerateMipmap(GL_TEXTURE2D);
 
 // ==================================================================
     // The Real Program starts here
     float red = 0;
 
-    // ----- Create Vertex Array Object, which makes changing between VBOs easier -----
-    unsigned int playerMesh;
-    glGenVertexArrays(1, &playerMesh);
-    glBindVertexArray(playerMesh);
-
-    // ----- Create Array Buffer on the GPU and copy our vertices to GPU -------
-    float vertices[] = {
-       -1.0f, -0.5f, 0.0f,
-        0.0f, -0.5f, 0.0f,
-       -0.5f,  0.5f, 0.0f
-    };
-    unsigned int VBO; // variable to store buffer id
-    glGenBuffers(1, &VBO); // ask open gl to create a buffer
-    glBindBuffer(GL_ARRAY_BUFFER, VBO); // tell gl to use this buffer
-    glBufferData(GL_ARRAY_BUFFER, // copy our vertices to the buffer
-        sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    // ------ configure vertex attribute(s) (currently it's just one, the position) -----
-    // so the vertex shader understands, where to find the input attributes, in this case position
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-
-    // ----- Create Vertex Array Object, which makes changing between VBOs easier -----
-    unsigned int enemyMesh;
-    glGenVertexArrays(1, &enemyMesh);
-    glBindVertexArray(enemyMesh);
-
-    // ----- Create Array Buffer on the GPU and copy our vertices to GPU -------
-    float vertices2[] = {
-        0.0f, -0.5f, 0.0f,
-        1.0f, -0.5f, 0.0f,
-        0.5f,  0.5f, 0.0f
-    };
-    unsigned int VBO2; // variable to store buffer id
-    glGenBuffers(1, &VBO2); // ask open gl to create a buffer
-    glBindBuffer(GL_ARRAY_BUFFER, VBO2); // tell gl to use this buffer
-    glBufferData(GL_ARRAY_BUFFER, // copy our vertices to the buffer
-        sizeof(vertices2), vertices2, GL_STATIC_DRAW);
-
-    // ------ configure vertex attribute(s) (currently it's just one, the position) -----
-    // so the vertex shader understands, where to find the input attributes, in this case position
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+    Mesh mesh1{};
+    Mesh mesh2{};
 
     // ----- Compile the Vertex Shader on the GPU -------
 
@@ -120,11 +89,10 @@ int main() {
 
 
     // While the User doesn't want to Quit (X Button, Alt+F4)
-    while (!glfwWindowShouldClose(window.window))
+    while (!window.shouldClose())
     {
         // process input (e.g. close window on Esc)
-        glfwPollEvents();
-        processInput(window.window);
+        window.processInput();
         red += 0.0001f;
         if (red > 1)
             red -= 1;
@@ -134,23 +102,18 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(orangeShaderProgram);
-        glBindVertexArray(playerMesh);
+        mesh1.use();
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
         glUseProgram(yellowShaderProgram);
-        glBindVertexArray(enemyMesh);
+        mesh2.use();
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
         // present (send the current frame to the computer screen)
-        glfwSwapBuffers(window.window); // ??
+        window.present(); // ??
     }
     // Cleans up all the GLFW stuff
     glfwTerminate();
     return 0;
 }
 
-void processInput(GLFWwindow* window)
-{
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-}

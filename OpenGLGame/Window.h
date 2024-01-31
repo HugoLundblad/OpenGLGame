@@ -21,9 +21,10 @@ class Window
         s = " [" + to_string(error) + "] " + msg + '\n';
         cerr << s << endl;
     }
+        
+    GLFWwindow* window;
 
 public:
-    GLFWwindow* window;
     void swapBuffers() {
         glfwSwapBuffers(window);
     }
@@ -69,6 +70,21 @@ public:
 
         // Initialization ends here
         success = true;
+    }
+
+    bool shouldClose() {
+        return glfwWindowShouldClose(this->window);
+    }
+
+    void processInput()
+    {
+        glfwPollEvents();
+        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+            glfwSetWindowShouldClose(window, true);
+    }
+
+    void present() {
+        glfwSwapBuffers(window);
     }
 };
 
