@@ -5,6 +5,8 @@
 #include "Window.h"
 #include "Mesh.h"
 #include "Shader.h"
+#include "Material.h"
+#include "Triangle.h"
 
 using namespace std;
 
@@ -26,7 +28,6 @@ int main() {
 
 // ==================================================================
     // The Real Program starts here
-    float red = 0;
 
     float vertices[]{
            -1.0f, -0.5f, 0.0f,
@@ -49,20 +50,9 @@ int main() {
 
     // ----- Compile the Vertex Shader on the GPU -------
 
-    Shader vertexShader{ "#version 330 core\n"
-            "layout (location = 0) in vec3 aPos;\n"
-            "void main()\n"
-            "{\n"
-            "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-            "}\0", GL_VERTEX_SHADER };
+    Shader vertexShader{"vertexShader.glsl", GL_VERTEX_SHADER};
 
-    Shader orangeShader{
-        "#version 330 core\n"
-        "out vec4 FragColor;\n"
-        "void main()\n"
-        "{\n"
-        "    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-        "} \0", GL_FRAGMENT_SHADER };
+    Shader orangeShader{"orangeFragmentShader.glsl", GL_FRAGMENT_SHADER};
 
     Shader yellowShader{
         "#version 330 core\n"
@@ -73,18 +63,13 @@ int main() {
         "} \0", GL_FRAGMENT_SHADER };
 
     // -------- Create Orange Shader Program (Render Pipeline) ---------
-    unsigned int orangeShaderProgram;
-    orangeShaderProgram = glCreateProgram();
-    glAttachShader(orangeShaderProgram, vertexShader.shaderId);
-    glAttachShader(orangeShaderProgram, orangeShader.shaderId);
-    glLinkProgram(orangeShaderProgram);
 
-    // -------- Create Yellow Shader Program (Render Pipeline) ---------
-    unsigned int yellowShaderProgram;
-    yellowShaderProgram = glCreateProgram();
-    glAttachShader(yellowShaderProgram, vertexShader.shaderId);
-    glAttachShader(yellowShaderProgram, yellowShader.shaderId);
-    glLinkProgram(yellowShaderProgram);
+    Material orange{vertexShader, orangeShader};
+    Material yellow{ vertexShader, yellowShader };
+
+    Triangle a{ &mesh1, &orange };
+    Triangle b{ &mesh2, &yellow };
+
 
     // clean up shaders after they've been linked into a program
     // glDeleteShader(orangeFragmentShader);
@@ -96,20 +81,12 @@ int main() {
     while (!window.shouldClose())
     {
         // process input (e.g. close window on Esc)
-        window.processInput();
-        red += 0.0001f;
-        if (red > 1)
-            red -= 1;
 
         // render (paint the current frame of the game)
-        glClearColor(red, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        window.clear();
 
-        glUseProgram(orangeShaderProgram);
-        mesh1.render();
-
-        glUseProgram(yellowShaderProgram);
-        mesh2.render();
+        a.render();
+        b.render();
 
         // present (send the current frame to the computer screen)
         window.present(); // ??
