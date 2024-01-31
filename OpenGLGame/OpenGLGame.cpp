@@ -27,8 +27,21 @@ int main() {
     // The Real Program starts here
     float red = 0;
 
-    Mesh mesh1{};
-    Mesh mesh2{};
+    float vertices[] = {
+   -1.0f, -0.5f, 0.0f,
+    0.0f, -0.5f, 0.0f,
+   -0.5f,  0.5f, 0.0f
+    };
+
+    Mesh mesh1{vertices, size(vertices)};
+
+    float vertices2[] = {
+   -1.0f, -0.5f, 0.0f,
+    0.0f, -0.5f, 0.0f,
+   -0.5f,  0.5f, 0.0f
+    };
+
+    Mesh mesh2{ vertices2, size(vertices2) };
 
     // ----- Compile the Vertex Shader on the GPU -------
 

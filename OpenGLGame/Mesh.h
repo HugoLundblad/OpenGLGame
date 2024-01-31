@@ -16,18 +16,14 @@ public:
 
     };
 
-	Mesh() {
+	Mesh(float* vertices, size_t count) {
 
         // ----- Create Vertex Array Object, which makes changing between VBOs easier -----
         glGenVertexArrays(1, &playerMesh);
         glBindVertexArray(playerMesh);
 
         // ----- Create Array Buffer on the GPU and copy our vertices to GPU -------
-        float vertices[] = {
-           -1.0f, -0.5f, 0.0f,
-            0.0f, -0.5f, 0.0f,
-           -0.5f,  0.5f, 0.0f
-        };
+
         unsigned int VBO; // variable to store buffer id
         glGenBuffers(1, &VBO); // ask open gl to create a buffer
         glBindBuffer(GL_ARRAY_BUFFER, VBO); // tell gl to use this buffer
