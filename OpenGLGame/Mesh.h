@@ -6,10 +6,12 @@
 class Mesh
 {
     unsigned int playerMesh;
+    size_t vertexCount;
 public:
 
-    void use() {
+    void render() {
         glBindVertexArray(playerMesh);
+        glDrawArrays(GL_TRIANGLES, 0, vertexCount);
     }
 
     struct Vertex {
