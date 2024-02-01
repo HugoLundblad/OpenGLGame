@@ -8,6 +8,7 @@
 #include "Material.h"
 #include "Triangle.h"
 #include "stb_image.h"
+#include "Texture.h"
 
 using namespace std;
 
@@ -17,32 +18,10 @@ int main() {
 
     Window window{ 800,600 };
 
+    Texture container{ "container.jpg", GL_TEXTURE0 };
+    Texture wall{ "wall.jpg", GL_TEXTURE1 };
+
     int width, height, nrChannels;
-
-    //stbi_set_flip_vertically_on_load(true);
-    unsigned char* data = stbi_load("container.jpg",
-        &width, &height, &nrChannels, 0);
-
-    unsigned int textureId;
-    glGenTextures(1, &textureId);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, textureId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width,
-        height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    stbi_image_free(data);
-
-    unsigned char* data1 = stbi_load("wall.jpg",
-        &width, &height, &nrChannels, 0);
-
-    unsigned int textureId1;
-    glGenTextures(1, &textureId1);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, textureId1);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width,
-        height, 0, GL_RGB, GL_UNSIGNED_BYTE, data1);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    stbi_image_free(data1);
 
     Vertex vertices[]{
            Vertex{Vector3{-1.0f, -0.5f, 0.0f}},
@@ -87,7 +66,7 @@ int main() {
     };
 
     Shader textureShader{
-        "blendTexturesFragmentShader.glsl", GL_FRAGMENT_SHADER
+        "textureFragmentShader.glsl", GL_FRAGMENT_SHADER
     };
 
 
@@ -100,7 +79,10 @@ int main() {
     a.red = 1;
     Triangle b{ &orange, &mesh2 };
     b.red = 0.5f;
-    Triangle c{ &textured, &mesh3 };
+    Triangle c{ &textured, &mesh3, &wall };
+    c.horizontalOffset = -0.5f;
+    Triangle d{ &textured, &mesh3, &container };
+    d.horizontalOffset = +0.5f;
 
     //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 
@@ -118,6 +100,7 @@ int main() {
         //c.horizontalOffset = cos(glfwGetTime());
 
         c.render();
+        d.render();
 
         window.present();
     }

@@ -2,18 +2,21 @@
 
 #include "Mesh.h"
 #include "Material.h"
+#include "Texture.h"
 
 class Triangle
 {
     Mesh* mesh;
     Material* material;
+    Texture* texture;
 
 public:
     float red;
     float horizontalOffset;
-    Triangle(Material* _material, Mesh* _mesh) {
+    Triangle(Material* _material, Mesh* _mesh, Texture* _texture = nullptr) {
         mesh = _mesh;
         material = _material;
+        texture = _texture;
     }
 
     void render() {
@@ -29,6 +32,15 @@ public:
 
         int diffuseLocation = glGetUniformLocation(
             material->shaderProgram, "diffuseTexture");
+        glActiveTexture(GL_TEXTURE0);
+        if (texture != nullptr)
+        {
+            glBindTexture(GL_TEXTURE_2D, texture->textureId);
+        }
+        else
+        {
+            glBindTexture(GL_TEXTURE_2D, 0);
+        }
         glUniform1i(diffuseLocation, 0);
 
         int blendLocation = glGetUniformLocation(
