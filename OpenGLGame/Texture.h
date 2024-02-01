@@ -12,6 +12,8 @@ public:
 
 	Texture(const char* imagePath, int textureUnit) {
 
+        stbi_set_flip_vertically_on_load(true);
+
         int width, height, nrChannels;
 
         //stbi_set_flip_vertically_on_load(true);
