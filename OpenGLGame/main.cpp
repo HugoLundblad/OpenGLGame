@@ -19,32 +19,19 @@ int main() {
 
     int width, height, nrChannels;
 
-    //stbi_set_flip_vertically_on_load(true);
+    stbi_set_flip_vertically_on_load(true);
     unsigned char* data = stbi_load("container.jpg",
         &width, &height, &nrChannels, 0);
-
+    
     unsigned int textureId;
     glGenTextures(1, &textureId);
-    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textureId);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width,
         height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
     stbi_image_free(data);
 
-    unsigned char* data1 = stbi_load("wall.jpg",
-        &width, &height, &nrChannels, 0);
-
-    unsigned int textureId1;
-    glGenTextures(1, &textureId1);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, textureId1);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width,
-        height, 0, GL_RGB, GL_UNSIGNED_BYTE, data1);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    stbi_image_free(data1);
-
-    Vertex vertices[]{
+    Vertex vertices[] {
            Vertex{Vector3{-1.0f, -0.5f, 0.0f}},
            Vertex{Vector3{ 0.0f, -0.5f, 0.0f}},
            Vertex{Vector3{-0.5f,  0.5f, 0.0f}},
@@ -87,7 +74,7 @@ int main() {
     };
 
     Shader textureShader{
-        "blendTexturesFragmentShader.glsl", GL_FRAGMENT_SHADER
+        "textureFragmentShader.glsl", GL_FRAGMENT_SHADER
     };
 
 
@@ -112,11 +99,10 @@ int main() {
         window.clear();
 
         a.render();
-        //a.horizontalOffset = cos(glfwGetTime());
         b.render();
-
-        //c.horizontalOffset = cos(glfwGetTime());
-
+        
+        c.horizontalOffset = cos(glfwGetTime());
+        
         c.render();
 
         window.present();

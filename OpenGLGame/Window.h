@@ -1,42 +1,36 @@
 #pragma once
 
 #include <iostream>
-#include <windows.h>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <string>
+#include "glad/glad.h"
+#include "GLFW/glfw3.h"
 
 using namespace std;
 
 class Window
 {
+    // We made these method static to make them compatible
+    // With the GLFW Callbacks (because they don't support this->)
     static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     {
         glViewport(0, 0, width, height);
     }
 
-
     static void error_callback(int error, const char* msg) {
-        string s;
-        s = " [" + to_string(error) + "] " + msg + '\n';
-        cerr << s << endl;
+        cerr << " [" << error << "] " << msg << endl;
     }
-        
     GLFWwindow* window;
 
 public:
-    void swapBuffers() {
-        glfwSwapBuffers(window);
-    }
+    // we introduced a bool to show whether creating the window
+    // was successful or not
     bool success{};
-    Window(int width, int height) {
+    Window(int width, int height) { // Start (Awake)
         glfwSetErrorCallback(error_callback);
 
         // Initialize GLFW
         if (!glfwInit()) { // Exit, if it failed
             cout << "Failed to init GLFW" << endl;
-            success = false;
-            return;
+            return; // We don't return -1 anymore, instead we leave success at false
         }
 
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -47,7 +41,11 @@ public:
 #endif
 
         // Request Window from Operating System
-        GLFWwindow* window = glfwCreateWindow(800, 600, "LearnOpenGL", nullptr, nullptr);
+        // And assign it to public class variable, so it can
+        // be accessed from the outside
+        window = glfwCreateWindow(800, 600,
+            "LearnOpenGL", nullptr, nullptr);
+
         if (window == nullptr)
         {
             cout << "Failed to create GLFW window" << endl;
@@ -64,16 +62,19 @@ public:
             return;
         }
         glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-        int width, height;
         glfwGetFramebufferSize(window, &width, &height);
         glViewport(0, 0, width, height);
 
         // Initialization ends here
-        success = true;
+        success = true; // We set success to be true
     }
 
     bool shouldClose() {
         return glfwWindowShouldClose(this->window);
+    }
+
+    void present() {
+        glfwSwapBuffers(window);
     }
 
     void processInput()
@@ -81,10 +82,6 @@ public:
         glfwPollEvents();
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(window, true);
-    }
-
-    void present() {
-        glfwSwapBuffers(window);
     }
 
     void clear() {

@@ -1,32 +1,30 @@
 #pragma once
 
-#include <glad/glad.h>
+#include "glad/glad.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
 
-using namespace std;
-
 class Shader
 {
     // Function to read the contents of a file into a string
-    string readShaderFile(const string& filePath) {
-        ifstream fileStream(filePath);
+    std::string readShaderFile(const std::string& filePath) {
+        std::ifstream fileStream(filePath);
 
         if (!fileStream.is_open()) {
-            cerr << "Failed to open file: " << filePath << endl;
+            std::cerr << "Failed to open file: " << filePath << std::endl;
             return "";
         }
 
-        stringstream buffer;
+        std::stringstream buffer;
         buffer << fileStream.rdbuf();
         return buffer.str();
     }
 
     // Function to compile a shader from a source file
-    GLuint compileShaderFromFile(const string& filePath, GLenum shaderType) {
+    GLuint compileShaderFromFile(const std::string& filePath, GLenum shaderType) {
         // Read shader source code from the file
-        string shaderSource = readShaderFile(filePath);
+        std::string shaderSource = readShaderFile(filePath);
         if (shaderSource.empty()) {
             return 0; // Failed to read shader source
         }
@@ -45,7 +43,7 @@ class Shader
 
         if (!success) {
             glGetShaderInfoLog(shader, 512, nullptr, infoLog);
-            cerr << "Shader compilation error in " << filePath << ":\n" << infoLog << endl;
+            std::cerr << "Shader compilation error in " << filePath << ":\n" << infoLog << std::endl;
             glDeleteShader(shader);
             return 0;
         }
@@ -55,14 +53,12 @@ class Shader
 
 public:
     unsigned int shaderId;
-	Shader(const char* source, short shaderType) {
-        shaderId = glCreateShader(shaderType);
-        glShaderSource(shaderId, 1, &source, NULL);
-        glCompileShader(shaderId);
-	}
-    Shader(const Shader&) = delete;
+    Shader(const char* shaderPath, int shaderType) { // when constructed: load shader on GPU
+        shaderId = compileShaderFromFile(shaderPath, shaderType);
+    }
+    Shader(const Shader&) = delete; // avoid it being cloned // Copy Constructor
 
-    ~Shader() {
+    ~Shader() { // when destructed: delete the shader from GPU
         glDeleteShader(shaderId);
     }
 };
