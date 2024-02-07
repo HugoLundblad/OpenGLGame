@@ -38,7 +38,33 @@ TEST(Vector3_Negate, InvertsPositiveValues) {
   EXPECT_TRUE(true);
 }
 
-TEST(Vector3_Multiply, MultiplyVector3Values) {
-    EXPECT_EQ(-Vector3(3, 4, 5), Vector3(-3, -4, -5));
+TEST(Vector3_ScalarMultiplication, ScalesAllValues) {
+    EXPECT_EQ(Vector3(3, 4, 5) * 2, Vector3(6, 8, 10));
     EXPECT_TRUE(true);
+}
+
+TEST(Vector3_ScalarDivision, InverseScaleValues) {
+    EXPECT_EQ(Vector3(6, 8, 10) / 2, Vector3(3, 4, 5));
+    EXPECT_TRUE(true);
+}
+
+TEST(Vector3_Addition, AddSumOfAllValues) {
+    EXPECT_EQ(Vector3(3, 4, 5) + Vector3(1, 2, 3), Vector3(4, 6, 8));
+    EXPECT_TRUE(true);
+}
+
+TEST(Vector3_Magnitude, CalculateMagnitudeOfVector) {
+    EXPECT_FLOAT_EQ(Vector3(3, 4, 0).Magnitude(), 5);
+}
+
+TEST(Vector3_SquaredMagnitude, CalculateSquaredMagnitudeOfVector) {
+    EXPECT_FLOAT_EQ(Vector3(3, 4, 0).SquareMagnitude(), 25);
+}
+
+TEST(Vector3_DotProduct, CalculateDotProductOfVectors) {
+    EXPECT_FLOAT_EQ(Vector3::Dot(Vector3(4, 6, 3), Vector3(-1, 8, 0)), 44);
+}
+
+TEST(Vector3_CrossProduct, CalculateCrossProductOfVectors) {
+    EXPECT_EQ(Vector3::Cross(Vector3(4, 6, 3), Vector3(-1, 8, 0)), Vector3(-24, -3, 38));
 }

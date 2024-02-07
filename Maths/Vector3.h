@@ -1,5 +1,9 @@
 #pragma once
 
+#include <iostream>
+
+using namespace std;
+
 // Right-Click on Solution >> Add New Project >> C++ Static Library >> "Maths"
 // Right-Click on Solution >> Add New Project >> GoogleTest (Target: Maths) >> "Maths.Test"
 // Right-Click on Maths >> Add New Class >> "Vector3"
@@ -32,6 +36,11 @@ public:
 		return Vector3(-x,-y,-z);
 	}
 
+	Vector3 operator+(const Vector3& other) const {
+		// return new vector where all components are negated
+		return Vector3(x + other.x, y + other.y, z + other.z);
+	}
+
 	Vector3 operator*(float f) const {
 		// return new vector where all components are negated
 		return Vector3(x * f, y * f, z * f);
@@ -40,6 +49,22 @@ public:
 	Vector3 operator/(float f) const {
 		// return new vector where all components are negated
 		return Vector3(x / f, y / f, z / f);
+	}
+
+	float Magnitude() const {
+		return sqrt(x * x + y * y + z * z);
+	}
+
+	float SquareMagnitude() const {
+		return x * x + y * y + z * z;
+	}
+
+	static float Dot(const Vector3 a, const Vector3 b) {
+		return a.x * b.x + a.y * b.y + a.z * b.z;
+	}
+
+	static Vector3 Cross(const Vector3 a, const Vector3 b) {
+		return Vector3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
 	}
 };
 /*
