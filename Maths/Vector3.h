@@ -66,6 +66,10 @@ public:
 	static Vector3 Cross(const Vector3 a, const Vector3 b) {
 		return Vector3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
 	}
+
+	Vector3 Normalize(const Vector3 a, const Vector3 b) {
+		return Vector3::Dot(a, b) / a.Magnitude();
+	}
 };
 /*
 static Vector3 operator*(float f, const Vector3& v) {
