@@ -41,6 +41,11 @@ public:
 		return Vector3(x + other.x, y + other.y, z + other.z);
 	}
 
+	Vector3 operator-(const Vector3& other) const {
+		// return new vector where all components are negated
+		return Vector3(x - other.x, y - other.y, z - other.z);
+	}
+
 	Vector3 operator*(float f) const {
 		// return new vector where all components are negated
 		return Vector3(x * f, y * f, z * f);
@@ -67,8 +72,12 @@ public:
 		return Vector3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
 	}
 
-	Vector3 Normalize(const Vector3 a, const Vector3 b) {
-		return Vector3::Dot(a, b) / a.Magnitude();
+	Vector3 Normalize() const {
+		return Vector3(x, y, z) / Vector3(x, y, z).Magnitude();
+	}
+
+	static float Distance(const Vector3 to, const Vector3 from) {
+		return (to - from).Magnitude();
 	}
 };
 /*

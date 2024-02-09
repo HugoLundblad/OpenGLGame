@@ -3,6 +3,7 @@
 #include "Mesh.h"
 #include "Material.h"
 #include "Texture.h"
+#include "../Maths/Matrix4x4.h"
 
 class Triangle
 {
@@ -25,6 +26,10 @@ public:
         int tintLocation = glGetUniformLocation(
             material->shaderProgram, "tintColor");
         glUniform4f(tintLocation, red, 0, 0, 1);
+
+        Matrix4x4 matrix = Matrix4x4::Translation(Vector3{ 0.2, 0, 0 });
+        unsigned int transformLoc = glGetUniformLocation(material->shaderProgram, "transform");
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &matrix.m11);
 
         int offsetLocation = glGetUniformLocation(
             material->shaderProgram, "horizontalOffset");
