@@ -13,6 +13,7 @@ class Triangle
 
 public:
     float red;
+    Vector3 position;
     float horizontalOffset;
     Triangle(Material* _material, Mesh* _mesh, Texture* _texture = nullptr) {
         mesh = _mesh;
@@ -31,6 +32,7 @@ public:
         unsigned int transformLoc = glGetUniformLocation(material->shaderProgram, "transform");
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &matrix.m11);
 
+        Matrix4x4 
         int offsetLocation = glGetUniformLocation(
             material->shaderProgram, "horizontalOffset");
         glUniform1f(offsetLocation, horizontalOffset);
