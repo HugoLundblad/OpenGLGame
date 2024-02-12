@@ -1,12 +1,13 @@
 
 #include <iostream>
+#include <vector>
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 #include "Window.h"
 #include "Mesh.h"
 #include "Shader.h"
 #include "Material.h"
-#include "Triangle.h"
+#include "GameObject.h"
 #include "stb_image.h"
 #include "Texture.h"
 
@@ -75,13 +76,13 @@ int main() {
     Material yellow{ vertexShader, yellowShader };
     Material textured{ vertexShader, textureShader };
 
-    Triangle a{ &orange, &mesh1 };
+    GameObject a{ &orange, &mesh1 };
     a.red = 1;
-    Triangle b{ &orange, &mesh2 };
+    GameObject b{ &orange, &mesh2 };
     b.red = 0.5f;
-    Triangle c{ &textured, &mesh3, &wall };
+    GameObject c{ &textured, Mesh::createQuad(), &wall};
     c.horizontalOffset = -0.5f;
-    Triangle d{ &textured, &mesh3, &container };
+    GameObject d{ &textured, Mesh::createQuad(), &container };
     d.horizontalOffset = +0.5f;
 
     //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
@@ -92,6 +93,9 @@ int main() {
         window.processInput();
 
         window.clear();
+
+        d.rotation.x = glfwGetTime();
+        c.rotation.x = glfwGetTime();
 
         a.render();
         //a.horizontalOffset = cos(glfwGetTime());

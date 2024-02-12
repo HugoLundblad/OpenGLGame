@@ -5,20 +5,22 @@
 #include "Texture.h"
 #include "../Maths/Matrix4x4.h"
 
-class Triangle
+class GameObject
 {
-    Mesh* mesh;
+    const Mesh* mesh;
     Material* material;
     Texture* texture;
 
 public:
     float red;
-    Vector3 position;
+    Vector3 position = Vector3(0, 0, 0);
+    Vector3 rotation = Vector3(0, 0, 0);
     float horizontalOffset;
-    Triangle(Material* _material, Mesh* _mesh, Texture* _texture = nullptr) {
+    GameObject(Material* _material, const Mesh* _mesh, Texture* _texture = nullptr) {
         mesh = _mesh;
         material = _material;
         texture = _texture;
+        position = Vector3(0, 0, 0);
     }
 
     void render() {
@@ -28,11 +30,12 @@ public:
             material->shaderProgram, "tintColor");
         glUniform4f(tintLocation, red, 0, 0, 1);
 
-        Matrix4x4 matrix = Matrix4x4::Translation(Vector3{ 0.2, 0, 0 });
+        Matrix4x4 matrixTranslation = Matrix4x4::Translation(position);
+        Matrix4x4 matrixRotation = Matrix4x4::Rotation(rotation);
+        Matrix4x4 matrixTransform = matrixRotation * matrixTranslation;
         unsigned int transformLoc = glGetUniformLocation(material->shaderProgram, "transform");
-        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &matrix.m11);
+        glUniformMatrix4fv(transformLoc, 1, GL_TRUE, &matrixTransform.m11);
 
-        Matrix4x4 
         int offsetLocation = glGetUniformLocation(
             material->shaderProgram, "horizontalOffset");
         glUniform1f(offsetLocation, horizontalOffset);

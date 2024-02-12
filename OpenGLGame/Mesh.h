@@ -1,15 +1,13 @@
 #pragma once
 
-#include "glad/glad.h"
 #include <cstddef>
+#include <algorithm>
+#include "glad/glad.h"
 #include "../Maths/Vector3.h"
+
 
 struct Vector2 {
     float x, y;
-};
-
-struct Vector3 {
-    float x, y, z;
 };
 
 struct Color {
@@ -32,14 +30,26 @@ class Mesh
 {
     unsigned int VAO;
     size_t vertexCount;
+
+    const static Vertex quadVertices[6];
+    static Mesh* quadMesh;
+
 public:
 
-    void render() {
+    static const Mesh* createQuad() {
+        if (quadMesh == nullptr)
+        {
+            quadMesh = new Mesh(Mesh::quadVertices, size(Mesh::quadVertices));
+        }
+        return quadMesh;
+    }
+
+    void render() const {
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, vertexCount);
     }
 
-    Mesh(Vertex* vertices, size_t count) {
+    Mesh(const Vertex* vertices, size_t count) {
         vertexCount = count;
         // ----- Create Vertex Array Object, which makes changing between VBOs easier -----
         glGenVertexArrays(1, &VAO);
