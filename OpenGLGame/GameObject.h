@@ -30,11 +30,9 @@ public:
             material->shaderProgram, "tintColor");
         glUniform4f(tintLocation, red, 0, 0, 1);
 
-        Matrix4x4 matrixTranslation = Matrix4x4::Translation(position);
-        Matrix4x4 matrixRotation = Matrix4x4::Rotation(rotation);
-        Matrix4x4 matrixTransform = matrixRotation * matrixTranslation;
+        Matrix4x4 matrixModel = Matrix4x4::Rotation(rotation) * Matrix4x4::Translation(position);
         unsigned int transformLoc = glGetUniformLocation(material->shaderProgram, "transform");
-        glUniformMatrix4fv(transformLoc, 1, GL_TRUE, &matrixTransform.m11);
+        glUniformMatrix4fv(transformLoc, 1, GL_TRUE, &matrixModel.m11);
 
         int offsetLocation = glGetUniformLocation(
             material->shaderProgram, "horizontalOffset");

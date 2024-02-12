@@ -78,14 +78,24 @@ int main() {
 
     GameObject a{ &orange, &mesh1 };
     a.red = 1;
-    GameObject b{ &orange, &mesh2 };
+/*  GameObject b{&orange, Mesh::createTriangle()};
     b.red = 0.5f;
     GameObject c{ &textured, Mesh::createQuad(), &wall};
     c.horizontalOffset = -0.5f;
     GameObject d{ &textured, Mesh::createQuad(), &container };
-    d.horizontalOffset = +0.5f;
+    d.horizontalOffset = +0.5f; */
 
     //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+
+    vector<GameObject*> gameObjects{};
+    for (size_t i = 0; i < size(cubePosition); i++)
+    {
+        GameObject* newCube = new GameObject{ &textured, Mesh::createCube(), &wall };
+        newCube->rotation.z = i * 0.1f;
+        newCube->rotation.x = i * 0.1f + 0.5f;
+        newCube->position = cubePosition[i];
+        gameObjects.push_back(newCube);
+    }
 
     // While the User doesn't want to Quit (X Button, Alt+F4)
     while (!window.shouldClose()) // window -> window.window

@@ -34,6 +34,12 @@ class Mesh
     const static Vertex quadVertices[6];
     static Mesh* quadMesh;
 
+    const static Vertex triangleVertices[3];
+    static Mesh* triangleMesh;
+
+    const static Vertex cubeVertices[36];
+    static Mesh* cubeMesh;
+
 public:
 
     static const Mesh* createQuad() {
@@ -42,6 +48,22 @@ public:
             quadMesh = new Mesh(Mesh::quadVertices, size(Mesh::quadVertices));
         }
         return quadMesh;
+    }
+
+    static const Mesh* createTriangle() {
+        if (triangleMesh == nullptr)
+        {
+            triangleMesh = new Mesh(Mesh::triangleVertices, size(Mesh::triangleVertices));
+        }
+        return triangleMesh;
+    }
+
+    static const Mesh* createCube() {
+        if (cubeMesh == nullptr)
+        {
+            cubeMesh = new Mesh(Mesh::cubeVertices, size(Mesh::cubeVertices));
+        }
+        return cubeMesh;
     }
 
     void render() const {
